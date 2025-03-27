@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Book
 from .serializers import BookSerializer, HWDataSerializer
@@ -14,9 +15,11 @@ from rest_framework.response import Response
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class BookCustomViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
 
     # HTTP GET localhost:8000/custom_books/
     def list(self, request):
@@ -82,7 +85,7 @@ books = ["1984", "To Kill a Mockingbird", "The Great Gatsby", "Moby-Dick", "Prid
 def home(request):
     # return HttpResponse(content)
     # return redirect("https://google.com/")
-    return render(request, 'main.html', {
+    return render(request, 'home.html', {
         "content": content
     })
 

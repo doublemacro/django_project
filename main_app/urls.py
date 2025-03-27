@@ -15,6 +15,7 @@ urlpatterns = [
     # path("get_data", views.get_data, name="get_data"),
     # path("api/books", views.get_books, name="get_books"),
     # path("books", views.get_books_page, name="books_page")
-    path("", include(router.urls))
+    path("", include(router.urls)),
+    path("home/", views.home, name="home"),
 ]
 
