@@ -1,15 +1,50 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework.permissions import IsAuthenticated
 
+from .forms import BookForm
 from .models import Book
 from .serializers import BookSerializer, HWDataSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+
+@login_required
+def my_books(request):
+    books = request.user.books.all()
+    return render(request, 'my_books.html', {'books': books})
+
+
+@login_required
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            book = form.save(commit=False)
+            book.created_by = request.user
+            book.save()
+            return HttpResponse("Book added successfully!")
+    else:
+        form = BookForm()
+        return render(request, 'add_book.html', {'form': form})
+
+
+@login_required
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id, created_by=request.user)
+    if request.method == "POST":
+        book.delete()
+        return redirect("my_books")
+
+# /books/1/confirm_delete -> /books/1/delete
+@login_required
+def confirm_delete(request, book_id):
+    book = get_object_or_404(Book, id=book_id, created_by=request.user)
+    return render(request, 'confirm_delete.html', {'book': book})
 
 
 class BookViewSet(viewsets.ModelViewSet):
