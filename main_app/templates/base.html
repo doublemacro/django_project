@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     <h1>Base template header</h1>
@@ -20,5 +20,13 @@
         <a href="{% url 'login' %}">Login</a>
         <a href="{% url 'register' %}">Register</a>
     {% endif %}
+    <br>
+
+    <p>Navigation: </p>
+    <a href="{% url 'home' %}" >Home</a>
+    <a href="{% url 'my_books' %}" >My books</a>
+    <a href="{% url 'add_book' %}" >Add new book</a>
+    <a href="{% url 'get_users' %}" >All registered users</a>
+
 </body>
 </html>

@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Add new Book</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} Add new Book {% endblock %}
+
+{% block content %}
   <h1>Add a new book:</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Add Book</button>
   </form>
-</body>
-</html>
+
+{% endblock %}

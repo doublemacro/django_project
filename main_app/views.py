@@ -12,6 +12,19 @@ from .models import Book
 from .serializers import BookSerializer, HWDataSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+from django.contrib.auth import get_user_model
+
+def books_by_user(request, user_id):
+    # returns all books that belong to the given user
+    user = get_object_or_404(get_user_model(), id=user_id)
+    # books = user.books.all()
+    books = Book.objects.filter(created_by=user)
+    return render(request, 'my_books.html', {'books': books})
+
+def get_users(request):
+    # needs to return all users.
+    users = get_user_model().objects.all()
+    return render(request, "users.html", {"users": users})
 
 @login_required
 def my_books(request):

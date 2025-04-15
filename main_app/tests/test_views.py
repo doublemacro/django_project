@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth.models import User
 from django.template.defaultfilters import title
-from django.test import client
+from django.test.client import Client
 from django.urls import reverse
 
 from main_app.models import Book
@@ -14,7 +14,7 @@ def user(db):
 
 
 @pytest.fixture
-def client_logged_in(client: client.Client, user):
+def client_logged_in(client: Client, user):
     client.login(username="adrian", password="tomatoes12345")
     return client
 
@@ -139,3 +139,24 @@ def test_confirm_delete(client_logged_in, user, book):
     response = client_logged_in.post("/books/delete/1/")
     assert response.status_code == 302
     assert len(Book.objects.all()) == 0
+
+def test_get_all_users(db, client: Client):
+    User.objects.create_user(username="adrian", password="tomatoes12345")
+    User.objects.create_user(username="adrian2", password="tomatoes123452")
+
+    url = "/users/"
+    response = client.get(url)
+    response = response.content.decode()
+    assert "adrian" in response
+    assert "adrian2" in response
+
+def test_get_books_by_user(db, client: Client, books, user):
+    user_id = user.id
+    url = "/users/{}/books/".format(user_id)
+
+    response = client.get(url)
+    decoded = response.content.decode()
+
+    assert str(books[0]) in decoded
+    assert str(books[1]) in decoded
+

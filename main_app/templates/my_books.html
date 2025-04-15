@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>All my books</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} My Books! {% endblock %}
+
+{% block content %}
+
   <h1>My books:</h1>
   {% if books %}
     <ul>
@@ -21,5 +20,5 @@
   {% else %}
     <p>You have no books.</p>
   {% endif %}
-</body>
-</html>
+
+{% endblock %}
