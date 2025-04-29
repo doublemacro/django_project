@@ -1,0 +1,23 @@
+
+Creaza un model nou in proiectul de books, numit BookDetail, care sa aiba o relatie de one-to-one cu modelul Book. El va fi completat automat de sistemul de inregistrare a cartilor, in momentul cand cream o carte. Atunci generam o instana a unui BookDetail, ii dam valori tuturor atributelor, si o salvam in baza de date impreuna cu acel book.
+
+    BookDetail.objects.create(
+        book=book,
+        summary=f"Auto-generated summary for '{book.title}'",
+        published_date=date.today(),
+        isbn="0000000000000"  # default or generated ISBN
+    )
+
+nr = "908478348753"
+
+BookDetail trebuie sa contina atributele:
+- "summary" care este un models.TextField(blank=True), care contine primele 20 de caractere din titlul cartii.
+- "published_date" care este un models.DateField(), care ia valoare timpului curent
+- "isbn" care este un models.CharField(max_length=13), care o sa contina un numar la intamplare de 13 litere. Puteti folosi modulul random, random.randint(0, 9) pentru fiecare caracter al numarului random.
+
+In BookDetail puteti adauga un atribut:
+    book = models.OneToOneField(Book, on_delete=models.CASCADE, related_name='detail')
+Care face de fapt legatura intre Book si BookDetail.
+Acel related_name ne ofera un atribut detail pentru modelul Book, book.detail va accesa aceasta instanta a clasei BookDetail.
+
+Scrieti cateva teste care testeaza crearea unui Book, a unui BookDetail, legatura dintre ele, si daca se creaza un BookDetail corect.

@@ -14,6 +14,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
+from main_app.utils import create_book_detail
+
 def books_by_user(request, user_id):
     # returns all books that belong to the given user
     user = get_object_or_404(get_user_model(), id=user_id)
@@ -40,6 +42,10 @@ def add_book(request):
             book = form.save(commit=False)
             book.created_by = request.user
             book.save()
+
+            # here we create a BookDetail entry for this book.
+            create_book_detail(book)
+
             return HttpResponse("Book added successfully!")
     else:
         form = BookForm()
@@ -88,7 +94,11 @@ class BookCustomViewSet(viewsets.ViewSet):
         # HTTP POST localhost:8000/custom_books/
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            book = serializer.save()
+
+            # create book detail for the given book.
+            create_book_detail(book)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
