@@ -4,7 +4,7 @@ from django.template.defaultfilters import title
 from django.test.client import Client
 from django.urls import reverse
 
-from main_app.models import Book
+from main_app.models import Book, BookDetail
 from main_app.serializers import BookSerializer
 
 
@@ -160,3 +160,19 @@ def test_get_books_by_user(db, client: Client, books, user):
     assert str(books[0]) in decoded
     assert str(books[1]) in decoded
 
+
+def test_book_detail_creation(client_logged_in, user):
+    url = "/books/add/"
+    # test book creation, POST request.
+    book_dict = {
+        "title": "Book 3 Test",
+        "author": "Creator 2 Test",
+        "page_count": 2,
+    }
+    response = client_logged_in.post(url, book_dict)
+    book = Book.objects.first()
+    assert response.status_code == 200
+    assert "Book added successfully!" in response.content.decode()
+
+    assert len(BookDetail.objects.all()) == 1
+    assert BookDetail.objects.first() == book.detail
