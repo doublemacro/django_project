@@ -10,7 +10,7 @@ from accounts.models import UserLoginMetadata
 @receiver(user_logged_in)
 def log_user_login(sender, request: HttpRequest, user, **kwargs):
     user_agent = request.META.get("HTTP_USER_AGENT", "")
-    ip = request.META.get("REMOTE_ADDR")
+    ip = request.META.get("REMOTE_ADDR", "")
     now = timezone.now()
 
     meta_data = UserLoginMetadata.objects.create(
