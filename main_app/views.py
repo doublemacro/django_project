@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework.permissions import IsAuthenticated
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import BookForm
 from .models import Book
@@ -30,7 +31,16 @@ def get_users(request):
 @login_required
 def my_books(request):
     books = request.user.books.all()
-    return render(request, 'my_books.html', {'books': books})
+    paginator = Paginator(books, 3)
+    page = request.GET.get("page")
+
+    try:
+        paginated_books = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_books = paginator.page(1)
+    except EmptyPage:
+        paginated_books = paginator.page(paginator.num_pages)
+    return render(request, 'my_books.html', {'books': paginated_books})
 
 
 @login_required

@@ -3,13 +3,21 @@
 {% block title %} My Books! {% endblock %}
 
 {% block content %}
-
+  <style>
+    .isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+    pointer-events: none;
+  }
+  </style>
   <h1>My books:</h1>
   {% if books %}
     <ul>
       {% for book in books %}
         <li>
-          {{ book }}
+          {{ book }}, {{ book.detail.isbn }} {{ book.detail.published_date }}
           <form action="{% url 'confirm_delete' book.id %}" method="get" style="display:inline;" >
             {% csrf_token %}
             <button type="submit">Delete</button>
@@ -17,6 +25,37 @@
         </li>
       {% endfor %}
     </ul>
+
+  <div>
+    <span>
+      Page {{ books.number }} of {{ books.paginator.num_pages }}
+    </span>
+
+    <div>
+      {% if books.has_previous %}
+        <a href="?page={{ books.previous_page_number }}">Previous</a>
+      {% else %}
+        <a class="isDisabled" href="">Previous</a>
+      {% endif %}
+
+      {% for num in books.paginator.page_range %}
+
+        {% if num == books.number %}
+          <strong>{{ num }}</strong>
+        {% elif num > books.number|add:'-4' and num < books.number|add:'4' %}
+          <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if books.has_next %}
+        <a href="?page={{ books.next_page_number }}">Next</a>
+      {% else %}
+        <a class="isDisabled" href="">Next</a>
+      {% endif %}
+
+    </div>
+  </div>
+
   {% else %}
     <p>You have no books.</p>
   {% endif %}
