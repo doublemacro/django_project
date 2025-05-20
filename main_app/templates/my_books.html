@@ -17,6 +17,9 @@
     <ul>
       {% for book in books %}
         <li>
+          {% if book.image %}
+            <img src="{{ book.image.url }}" width="100">
+          {% endif %}
           {{ book }}, {{ book.detail.isbn }} {{ book.detail.published_date }}
           <form action="{% url 'confirm_delete' book.id %}" method="get" style="display:inline;" >
             {% csrf_token %}

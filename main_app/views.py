@@ -46,7 +46,7 @@ def my_books(request):
 @login_required
 def add_book(request):
     if request.method == "POST":
-        form = BookForm(request.POST)
+        form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save(commit=False)
             book.created_by = request.user
